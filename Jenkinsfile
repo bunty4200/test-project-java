@@ -22,6 +22,12 @@ environment {
                 sh 'mvn surefire-report:report'
                 echo "----------------------unit test completed------------"
             }
-        }  
+        }
+
+        stage('Build Docker image')
+            steps{
+                    echo "-----------------docker build started--------------"
+                    sh 'docker build -t iqm/javaapp:$BUILD_NUMBER .'
+            }  
     }    
 }
