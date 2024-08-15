@@ -24,10 +24,12 @@ environment {
             }
         }
 
-        stage('Build Docker image')
+        stage('Build Docker image'){
             steps{
                     echo "-----------------docker build started--------------"
                     sh 'docker build -t iqm/javaapp:$BUILD_NUMBER .'
+                    echo "-----------------docker build completed------------"
             }  
-    }    
+        }
+    }
 }
