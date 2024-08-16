@@ -71,7 +71,7 @@ environment {
                     --family ${TASK_DEFINITION} \
                     --network-mode awsvpc \
                     --cpu '256' \
-                    --memory '512' \ 
+                    --memory '512' \
                     --container-definitions '[
                         {
                             "name": "${CONTAINER_NAME}",
