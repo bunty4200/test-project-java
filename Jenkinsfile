@@ -32,7 +32,7 @@ environment {
             steps{
                 script{
                     echo "-----------------docker build started--------------"
-                     sh 'docker build -t iqm/javaapp:${BUILD_NUMBER} .'
+                     sh 'docker build -t bunty4200/iqm_javaapp:${BUILD_NUMBER} .'
                     echo "-----------------docker build completed------------"
                 }
             }  
@@ -45,7 +45,7 @@ environment {
 
         stage('push image'){
             steps{
-                sh 'docker push iqm/javaapp:${BUILD_NUMBER}'
+                sh 'docker push bunty4200/iqm_javaapp:${BUILD_NUMBER}'
         }
     }
 }
