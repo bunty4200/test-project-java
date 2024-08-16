@@ -1,7 +1,4 @@
 def registry = 'https://hub.docker.io'
-def imageName = 'hub.docker.io/name-docker/iqm'
-def version = '1.1.1'
-
 pipeline{
    
     agent{
@@ -13,6 +10,7 @@ environment {
     PATH = "/opt/apache-maven-3.9.8/bin:$PATH"
     BUILD_NUMBER = "${env.BUILD_NUMBER ?: 'latest'}"
     registry = 'https://registry.hub.docker.com'
+    DOCKERHUB_CREDENTIALS = credentials('docker-hub')
 }
     stages {
         stage('Build') {
@@ -39,17 +37,15 @@ environment {
                 }
             }  
         }
-
-        stage('Docker Publish'){
+        stage('login to dockerhub') {
             steps{
-                script{
-                echo "-----------------------Docker publish Started-----------"
-                 docker.withRegistry("$registry", 'docker-hub'){
-                    def app = docker.image("iqm/javaapp:${BUILD_NUMBER}")
-                    app.push()
-                    }
-                     echo "-----------------------Docker publish completed-----------"
+                sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
+        }
+
+        stage('push image'){
+            steps{
+                sh 'docker push iqm/javaapp:${BUILD_NUMBER}'
         }
     }
 }
