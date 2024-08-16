@@ -63,11 +63,10 @@ environment {
             steps {
                     echo "-----------------Deploying to ECS started------------"
 
-                    withCredentials([aws(credentialsId: 'aws-cred', region: "${AWS_REGION}")])
-                {
-                    // Register new task definition revision
-                    sh """
-                  TASK_DEF_ARN=\$(aws ecs register-task-definition --region ${AWS_REGION} \
+                    withCredentials([aws(credentialsId: 'aws-cred', region: "${AWS_REGION}")]){
+                script {
+                   def taskDefArn = sh(script: """
+                    aws ecs register-task-definition --region ${AWS_REGION} \
                     --family ${TASK_DEFINITION} \
                     --network-mode awsvpc \
                     --cpu '256' \
@@ -92,10 +91,10 @@ environment {
                     --execution-role-arn arn:aws:iam::533267330681:role/ecsTaskExecutionRole \
                     --task-role-arn arn:aws:iam::533267330681:role/ecsTaskRole \
                      --query 'taskDefinition.taskDefinitionArn' \
-                     --output text)
-                    """
+                     --output text
+                    """, returnStdout: true).trim()
                     echo "New Task Definition ARN: \$TASK_DEF_ARN"
-                    
+
                     // Update ECS service with the new task definition
                     sh """
                     aws ecs update-service --region ${AWS_REGION} \
@@ -109,7 +108,7 @@ environment {
                 }
             }
         }
-
+    }
 }
 
 post{
