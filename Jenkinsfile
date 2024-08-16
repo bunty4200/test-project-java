@@ -1,5 +1,9 @@
-pipeline{
+def registry = 'https://hub.docker.io'
+def imageName = 'hub.docker.io/name-docker/iqm'
+def version = '1.1.1'
 
+pipeline{
+   
     agent{
         node{
             label 'maven'
@@ -26,10 +30,23 @@ environment {
 
         stage('Build Docker image'){
             steps{
+                script{
                     echo "-----------------docker build started--------------"
-                    sh 'docker build -t iqm/javaapp:$BUILD_NUMBER .'
+                    app = docker.build(imageName+":"+version)
                     echo "-----------------docker build completed------------"
+                }
             }  
         }
+
+        stage('Docker Publish'){
+            steps{
+                script{
+                echo "-----------------------Docker publish Started-----------"
+                 docker.withRegistry(registry, 'docker-hub'){
+                    app.push()
+                    }
+            }
+        }
     }
+}
 }
