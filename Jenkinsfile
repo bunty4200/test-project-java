@@ -67,7 +67,7 @@ environment {
                 script {
                    def taskDefArn = sh(script: """
                     aws ecs register-task-definition --region ${AWS_REGION} \
-                    --family ${TASK_DEFINITION} \
+                    --family ${taskDefArn} \
                     --network-mode awsvpc \
                     --cpu '256' \
                     --memory '512' \
@@ -93,14 +93,14 @@ environment {
                      --query 'taskDefinition.taskDefinitionArn' \
                      --output text
                     """, returnStdout: true).trim()
-                    echo "New Task Definition ARN: \$TASK_DEF_ARN"
+                    echo "New Task Definition ARN: $taskDefArn"
 
                     // Update ECS service with the new task definition
                     sh """
                     aws ecs update-service --region ${AWS_REGION} \
                     --cluster ${CLUSTER_NAME} \
                     --service ${SERVICE_NAME} \
-                    --task-definition ${TASK_DEF_ARN} \
+                    --task-definition ${taskDefArn} \
                     --force-new-deployment
                     """
 
