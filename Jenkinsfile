@@ -67,7 +67,7 @@ environment {
                 {
                     // Register new task definition revision
                     sh """
-                    aws ecs register-task-definition --region ${AWS_REGION} \
+                   TASK_DEF_ARN=$(aws ecs register-task-definition --region ${AWS_REGION} \
                     --family ${TASK_DEFINITION} \
                     --network-mode awsvpc \
                     --cpu '256' \
@@ -90,7 +90,9 @@ environment {
                     ]' \
                     --requires-compatibilities FARGATE \
                     --execution-role-arn arn:aws:iam::533267330681:role/ecsTaskExecutionRole \
-                    --task-role-arn arn:aws:iam::533267330681:role/ecsTaskRole
+                    --task-role-arn arn:aws:iam::533267330681:role/ecsTaskRole \
+                     --query 'taskDefinition.taskDefinitionArn' \
+                     --output text)
                     """
 
                     // Update ECS service with the new task definition
@@ -98,6 +100,7 @@ environment {
                     aws ecs update-service --region ${AWS_REGION} \
                     --cluster ${CLUSTER_NAME} \
                     --service ${SERVICE_NAME} \
+                    --task-definition ${TASK_DEF_ARN} \
                     --force-new-deployment
                     """
 
