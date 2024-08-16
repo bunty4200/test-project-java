@@ -67,7 +67,7 @@ environment {
                 {
                     // Register new task definition revision
                     sh """
-                   TASK_DEF_ARN=$(aws ecs register-task-definition --region ${AWS_REGION} \
+                  TASK_DEF_ARN=\$(aws ecs register-task-definition --region ${AWS_REGION} \
                     --family ${TASK_DEFINITION} \
                     --network-mode awsvpc \
                     --cpu '256' \
@@ -94,7 +94,8 @@ environment {
                      --query 'taskDefinition.taskDefinitionArn' \
                      --output text)
                     """
-
+                    echo "New Task Definition ARN: \$TASK_DEF_ARN"
+                    
                     // Update ECS service with the new task definition
                     sh """
                     aws ecs update-service --region ${AWS_REGION} \
