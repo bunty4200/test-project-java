@@ -67,7 +67,7 @@ environment {
                 script {
                    def taskDefArn = sh(script: """
                     aws ecs register-task-definition --region ${AWS_REGION} \
-                    --family ${taskDefArn} \
+                    --family ${TASK_DEFINITION} \
                     --network-mode awsvpc \
                     --cpu '256' \
                     --memory '512' \
