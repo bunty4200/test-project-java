@@ -55,7 +55,7 @@ environment {
             steps {
                 script {
                     echo "-----------------Deploying to ECS started------------"
-
+                        withCredentials([aws(credentialsId: 'aws-cred', region: "${AWS_REGION}")]) {
                     // Register new task definition revision
                     sh """
                     aws ecs register-task-definition --region ${AWS_REGION} \
