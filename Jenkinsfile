@@ -70,8 +70,8 @@ environment {
                     aws ecs register-task-definition --region ${AWS_REGION} \
                     --family ${TASK_DEFINITION} \
                     --network-mode awsvpc \
-                    --cpu '256' \  // Define CPU at task level
-                    --memory '512' \  // Define memory at task level
+                    --cpu '256' \
+                    --memory '512' \ 
                     --container-definitions '[
                         {
                             "name": "${CONTAINER_NAME}",
