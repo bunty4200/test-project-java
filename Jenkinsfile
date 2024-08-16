@@ -11,6 +11,7 @@ pipeline{
     }
 environment {
     PATH = "/opt/apache-maven-3.9.8/bin:$PATH"
+    BUILD_NUMBER = "${env.BUILD_NUMBER ?: 'latest'}"
     registry = 'https://registry.hub.docker.com'
 }
     stages {
@@ -33,7 +34,7 @@ environment {
             steps{
                 script{
                     echo "-----------------docker build started--------------"
-                    sh 'docker build -t iqm/javaapp:$BUID_NUMBER .'
+                     sh 'docker build -t iqm/javaapp:${BUILD_NUMBER} .'
                     echo "-----------------docker build completed------------"
                 }
             }  
@@ -44,7 +45,7 @@ environment {
                 script{
                 echo "-----------------------Docker publish Started-----------"
                  docker.withRegistry("$registry", 'docker-hub'){
-                    def app = docker.build("iqm/javaapp:$BUILD_NUMBER")
+                    def app = docker.build("iqm/javaapp:${BUILD_NUMBER}")
                     app.push()
                     }
                      echo "-----------------------Docker publish completed-----------"
