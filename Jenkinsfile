@@ -45,7 +45,7 @@ environment {
                 script{
                 echo "-----------------------Docker publish Started-----------"
                  docker.withRegistry("$registry", 'docker-hub'){
-                    def app = docker.build("iqm/javaapp:${BUILD_NUMBER}")
+                    def app = docker.image("iqm/javaapp:${BUILD_NUMBER}")
                     app.push()
                     }
                      echo "-----------------------Docker publish completed-----------"
