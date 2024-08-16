@@ -1,19 +1,21 @@
 pipeline{
+    
     agent{
         node{
             label 'maven'
         }
     }
+
 environment {
     PATH = "/opt/apache-maven-3.9.8/bin:$PATH"
     BUILD_NUMBER = "${env.BUILD_NUMBER ?: 'latest'}"
     registry = 'https://registry.hub.docker.com'
     DOCKERHUB_CREDENTIALS = credentials('docker-hub')
     AWS_REGION = 'ap-south-1'  // Update to your desired AWS region
-        CLUSTER_NAME = 'my-ecs-cluster'  // Update with your ECS Cluster name
-        SERVICE_NAME = 'my-ecs-service'  // Update with your ECS Service name
-        TASK_DEFINITION = 'my-task-def'  // Update with your Task Definition family name
-        CONTAINER_NAME = 'my-container'  // Update with your container name used in the task definition
+    CLUSTER_NAME = 'my-ecs-cluster'  // Update with your ECS Cluster name
+    SERVICE_NAME = 'my-ecs-service'  // Update with your ECS Service name
+    TASK_DEFINITION = 'my-task-def'  // Update with your Task Definition family name
+    CONTAINER_NAME = 'my-container'  // Update with your container name used in the task definition
 }
     stages {
         stage('Build') {
@@ -23,6 +25,7 @@ environment {
                 echo "----------------------build  completed-------------"
             }
        }
+
         stage('test'){
             steps{
                 echo "----------------------unit test started-------------"
@@ -40,22 +43,28 @@ environment {
                 }
             }  
         }
+
+
         stage('login to dockerhub') {
             steps{
                 sh 'echo $DOCKERHUB_CREDENTIALS_PSW | docker login -u $DOCKERHUB_CREDENTIALS_USR --password-stdin'
             }
         }
 
+
         stage('push image'){
             steps{
                 sh 'docker push bunty4200/iqm_javaapp:${BUILD_NUMBER}'
         }
     }
+
+
     stage('Deploy to ECS') {
             steps {
-                script {
                     echo "-----------------Deploying to ECS started------------"
-                        withCredentials([aws(credentialsId: 'aws-cred', region: "${AWS_REGION}")]) {
+
+                    withCredentials([aws(credentialsId: 'aws-cred', region: "${AWS_REGION}")])
+                {
                     // Register new task definition revision
                     sh """
                     aws ecs register-task-definition --region ${AWS_REGION} \
@@ -101,6 +110,5 @@ post{
     always{
         sh 'docker logout'
     }
-}
 }
 }
