@@ -33,7 +33,7 @@ environment {
             steps{
                 script{
                     echo "-----------------docker build started--------------"
-                    sh 'docker build -t iqm/javaapp:$BUID_NUMBER'
+                    sh 'docker build -t iqm/javaapp:$BUID_NUMBER .'
                     echo "-----------------docker build completed------------"
                 }
             }  
